@@ -95,6 +95,43 @@ public class SistemaCompletoTickets {
     }
 
     // ==================== COMPARADOR PARA HEAP ====================
+    static class ComparadorTickets implements Comparator<Ticket> {
+        private Map<String, Integer> valoresPrioridad;
+        private Map<String, Integer> prioridadTipoUsuario;
+
+        public ComparadorTickets() {
+            valoresPrioridad = new HashMap<>();
+            valoresPrioridad.put("crítico", 0);
+            valoresPrioridad.put("alto", 1);
+            valoresPrioridad.put("medio", 2);
+            valoresPrioridad.put("bajo", 3);
+
+            prioridadTipoUsuario = new HashMap<>();
+            prioridadTipoUsuario.put("administrativo", 0);
+            prioridadTipoUsuario.put("alumno", 1);
+        }
+
+        @Override
+        public int compare(Ticket t1, Ticket t2) {
+            // Primero por nivel de severidad
+            int prioridad1 = valoresPrioridad.getOrDefault(t1.prioridad, 2);
+            int prioridad2 = valoresPrioridad.getOrDefault(t2.prioridad, 2);
+
+            if (prioridad1 != prioridad2) {
+                return Integer.compare(prioridad1, prioridad2);
+            }
+
+            // Luego por tiempo de espera (fecha más antigua primero)
+            int comparacionFecha = t1.fechaCreacion.compareTo(t2.fechaCreacion);
+            if (comparacionFecha != 0) {
+                return comparacionFecha;
+            }
+
+            // Finalmente por tipo de usuario (si se conoce)
+            // Esto requiere acceso a la información del usuario
+            return 0;
+        }
+    }
 
     // ==================== ESTRUCTURAS DE DATOS ====================
     private Map<String, Ticket> ticketsDB;          // TABLA HASH: idTicket -> Ticket
